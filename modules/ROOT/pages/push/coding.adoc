@@ -178,24 +178,15 @@ func application(_ application: UIApplication,
 
 [source,javascript]
 ----
-const push = PushNotification.init({
-    android: {},
-    ios: {
-        alert: "true",
-        badge: "true",
-        sound: "true"
-    }
-});
+import { PushRegistration } from "@aerogear/push";
 
-// Registration handler
-push.on('registration', data => {
-    // PushRegistration is part of @aerogear/push
-    new PushRegistration().register(data.registrationId).then(() => {
-        // Registration with UPS successful, you can now send push notifications from the UPS UI
-    }).catch(err => {
-        // Error on device registration
+new PushRegistration().register("deviceToken")
+    .then(() => {
+        console.log("Push registration successful");
+    })
+    .catch(err => {
+        console.log(err.message);
     });
-});
 ----
 
 *Using Ionic*
@@ -203,6 +194,7 @@ push.on('registration', data => {
 [source,javascript]
 ----
 import { Push } from "@ionic-native/push";
+import { PushRegistration } from "@aerogear/push";
 
 const pushObject = new Push().init({
     android: {},
@@ -213,13 +205,16 @@ const pushObject = new Push().init({
     }
 });
 
-pushObject.on('registration').subscribe(data => {
-    new PushRegistration().register(data.registrationId, PUSH_ALIAS).then(() => {
-        // Registration with UPS successful, you can now send push notifications from the UPS UI
-    }).catch(err => {
-        //Error on device registration
+pushObject.on('registration')
+    .subscribe(data => {
+        new PushRegistration().register(data.registrationId)
+            .then(() => {
+                console.log("Push registration successful");
+            })
+            .catch(err => {
+                console.log(err.message);
+            });
     });
-});
 ----
 
 ****
